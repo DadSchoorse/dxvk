@@ -70,6 +70,10 @@ namespace dxvk {
 
 
   HRESULT D3D9StateBlock::SetRenderState(D3DRENDERSTATETYPE State, DWORD Value) {
+    if (unlikely(State == D3DRS_COLORWRITEENABLE && Value == (D3DCOLORWRITEENABLE_RED | D3DCOLORWRITEENABLE_BLUE | D3DCOLORWRITEENABLE_GREEN)))
+    {
+      Value = D3DCOLORWRITEENABLE_RED | D3DCOLORWRITEENABLE_BLUE | D3DCOLORWRITEENABLE_GREEN | D3DCOLORWRITEENABLE_ALPHA;
+    }
     m_state.renderStates[State] = Value;
 
     m_captures.flags.set(D3D9CapturedStateFlag::RenderStates);
