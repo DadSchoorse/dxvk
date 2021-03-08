@@ -1723,6 +1723,11 @@ namespace dxvk {
   HRESULT STDMETHODCALLTYPE D3D9DeviceEx::SetRenderState(D3DRENDERSTATETYPE State, DWORD Value) {
     D3D9DeviceLock lock = LockDevice();
 
+    if (unlikely(State == D3DRS_COLORWRITEENABLE && Value == (D3DCOLORWRITEENABLE_RED | D3DCOLORWRITEENABLE_BLUE | D3DCOLORWRITEENABLE_GREEN)))
+    {
+      Value = D3DCOLORWRITEENABLE_RED | D3DCOLORWRITEENABLE_BLUE | D3DCOLORWRITEENABLE_GREEN | D3DCOLORWRITEENABLE_ALPHA;
+    }
+
     // D3D9 only allows reading for values 0 and 7-255 so we don't need to do anything but return OK
     if (unlikely(State > 255 || (State < D3DRS_ZENABLE && State != 0))) {
       return D3D_OK;
