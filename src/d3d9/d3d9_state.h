@@ -245,19 +245,23 @@ namespace dxvk {
           bool                 FloatEmu) {
     auto UpdateHelper = [&] (auto& set) {
       if constexpr (ConstantType == D3D9ConstantType::Float) {
-        auto begin = reinterpret_cast<const Vector4*>(pConstantData);
-        auto end   = begin + Count;
 
-        if (!FloatEmu)
-          std::copy(begin, end, &set.fConsts[StartRegister]);
-        else
-          std::transform(begin, end, &set.fConsts[StartRegister], replaceNaN);
+        if (!FloatEmu) {
+          size_t len = Count * sizeof(Vector4);
+          void* dest = reinterpret_cast<void*>(&set.fConsts[StartRegister]);
+
+          std::memcpy(dest, pConstantData, len);
+        }
+        else {
+          for (UINT i = 0; i < Count; i++)
+            set.fConsts[StartRegister + i] = replaceNaN(pConstantData + (i * 4));
+        }
       }
       else if constexpr (ConstantType == D3D9ConstantType::Int) {
-        auto begin = reinterpret_cast<const Vector4i*>(pConstantData);
-        auto end   = begin + Count;
+        size_t len = Count * sizeof(Vector4i);
+        void* dest = reinterpret_cast<void*>(&set.iConsts[StartRegister]);
 
-        std::copy(begin, end, &set.iConsts[StartRegister]);
+        std::memcpy(dest, pConstantData, len);
       }
       else {
         for (uint32_t i = 0; i < Count; i++) {
