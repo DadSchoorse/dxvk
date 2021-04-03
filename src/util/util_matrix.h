@@ -18,6 +18,8 @@ namespace dxvk {
       const Vector4& v2,
       const Vector4& v3);
 
+    Matrix4(const float raw[16]);
+
     Matrix4(const Matrix4& other) = default;
 
     Vector4& operator[](size_t index);

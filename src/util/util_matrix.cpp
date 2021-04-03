@@ -29,6 +29,13 @@ namespace dxvk {
     data[3] = v3;
   }
 
+  Matrix4::Matrix4(const float raw[16]) {
+    data[0] = Vector4(raw);
+    data[1] = Vector4(raw + 4);
+    data[2] = Vector4(raw + 8);
+    data[3] = Vector4(raw + 12);
+  }
+
         Vector4& Matrix4::operator[](size_t index)       { return data[index]; }
   const Vector4& Matrix4::operator[](size_t index) const { return data[index]; }
 
